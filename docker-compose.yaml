@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  springerator-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: springerator-app
+    ports:
+      - "9001:9001"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    networks:
+      - springerator-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: springerator-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - springerator-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+networks:
+  springerator-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
