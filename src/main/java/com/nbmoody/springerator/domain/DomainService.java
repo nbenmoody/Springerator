@@ -14,6 +14,7 @@ public class DomainService {
         return domainRepository.findAll();
     }
 
+    @Cacheable(value = "domainModelCache", key = "#isbn") // Uses a cache called 'value' with the given key, or all method args by default.
     public DomainModel viewDomainModelDetails(String isbn) {
         return domainRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new DomainModelNotFoundException(isbn));
