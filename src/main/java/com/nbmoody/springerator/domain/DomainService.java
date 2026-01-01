@@ -1,5 +1,6 @@
 package com.nbmoody.springerator.domain;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +15,8 @@ public class DomainService {
         return domainRepository.findAll();
     }
 
-    @Cacheable(value = "domainModelCache", key = "#isbn") // Uses a cache called 'value' with the given key, or all method args by default.
+    // Uses a cache called 'value' with the given key, or all method args by default.
+    @Cacheable(value = "domainModelCache", key = "#isbn")
     public DomainModel viewDomainModelDetails(String isbn) {
         return domainRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new DomainModelNotFoundException(isbn));

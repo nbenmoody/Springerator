@@ -1,18 +1,18 @@
-version: '3.8'
-
 services:
   springerator-app:
     build:
       context: .
       dockerfile: Dockerfile
+      no_cache: true
+    pull_policy: build
     container_name: springerator-app
     ports:
       - "9001:9001"
     environment:
-      - SPRING_PROFILES_ACTIVE=local
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - REDIS_PASSWORD=springerator_redis_pass  # Obviously, in production we would set this securely. It is picked up by the application.yaml
+      - REDIS_PASSWORD=springerator_redis_pass  
+      # Obviously, in production we would set this securely. It is picked up by the application.yaml
     depends_on:
       - redis
     networks:
@@ -29,7 +29,8 @@ services:
     networks:
       - springerator-network
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass springerator_redis_pass # This configured the password here. Not using an ACL, but that's possible also, to limit the application to a key prefix.
+    command: redis-server --appendonly yes --requirepass springerator_redis_pass 
+    # This configured the password here. Not using an ACL, but that's possible also, to limit the application to a key prefix.
 
 networks:
   springerator-network:
